@@ -30,7 +30,7 @@ int main() {
     int signo = 0;
     //variable parentesis que servirá como condicional para saber si ne las iteraciones pasamos por un paréntesis
     int parentesis = 0;
-    printf("Ingrese la ecuación a graficar: ");
+    printf("Ingrese la ecuacion a graficar: ");
     scanf("%s", &ecuation);
     //variable longitudEcuation para saber el número de carácteres de la ecuacion
     int longitudEcuation = strlen(ecuation);
@@ -278,7 +278,7 @@ int ejesY = (int) round(ejeY);
 //Condicional y ciclo para guardar en el array pantalla la posición del eje y y los valores donde irá los números del eje y
 if(ejesY >= 0 && ejesY <= 99){
     for(int i = 0; i <25; i++){
-    pantalla[i][ejesY] = '|';
+    pantalla[i][ejesY] = 179;
     }
     //variable nY que guarda el valor a trabajar para imprimir los números del eje y
     double nY = abs(yMin-yMax)/5;
@@ -311,7 +311,7 @@ if(ejesY >= 0 && ejesY <= 99){
 //Condicional y ciclo para guardar en el array pantalla la posición del eje x y los valores donde irá los números del eje x
 if(ejesX >= 0 && ejesX <= 23){
     for(int i = 0; i <100; i++){
-    pantalla[23-ejesX][i] = '-';
+    pantalla[23-ejesX][i] = 196;
    }
 for (int i = 0; i < nOperar; i++) {
     //variable cadena que guardará el número a convertir en string
