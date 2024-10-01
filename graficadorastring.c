@@ -9,7 +9,7 @@ int main() {
     //variable auxiliar para convertir el coeficiente temporal y el exponente temporal en vacío
     char auxiliar[10] = "";
     //variable ecuation que guarda el string de la ecuacion
-    char ecuation[100];
+    char ecuation[100] = "";
     //variable coeficienteTemp que guarda el coeficiente en el momento de la posicion del ciclo
     char coeficienteTemp[20] = ""; 
     //variable exponenteTemp que guarda el exponente en el momento de la posicion del ciclo
