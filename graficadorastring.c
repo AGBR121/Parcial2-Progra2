@@ -20,6 +20,8 @@ int main() {
     int exponentes[20]; 
     //variable y que guarda los valores de y en un array de acuerdo a la ecuacion.
     double y[20];
+    //variable coeficienteExponente que guerda en un array los arrays coeficientes y exponentes
+    int coeficienteExponente[2][20];
     //variable x que servirá como condicional para saber si en las iteraciones pasamos por una x
     int x = 0;
     //variable nCoeficientes que guarda la posicion dentro del array de coeficientes para guardar el proximo coeficiente
@@ -187,6 +189,10 @@ int main() {
     }
     }
 
+    for(int i=0; i<nCoeficientes; i++){
+        coeficienteExponente[0][i]=coeficientes[i];
+        coeficienteExponente[1][i]=exponentes[i];
+    }
     //Imprimimos la tabla de coeficientes y exponentes
 
     printf("\n  Coeficiente   Potencia\n");
@@ -195,7 +201,7 @@ int main() {
     int k = 0;
     //Ciclo para imprimir la tabla
     for (int j = 0; j < nCoeficientes && k < nExponentes; j++) {
-        printf("|%-12d|%-12d|\n", coeficientes[j], exponentes[k]);
+        printf("|%-12d|%-12d|\n", coeficienteExponente[0][j], coeficienteExponente[1][j]);
         k++;
         printf("+------------+------------+\n");
     }
@@ -220,7 +226,7 @@ int main() {
                 newY = NAN;
                 break;
             }else{
-                newY = newY + (coeficientes[i]*pow(counter, exponentes[i]));
+                newY = newY + (coeficienteExponente[0][i]*pow(counter, coeficienteExponente[1][i]));
             }
             
         }
