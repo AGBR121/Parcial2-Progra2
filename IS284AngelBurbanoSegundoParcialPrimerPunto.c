@@ -32,13 +32,13 @@ void Graph(){
     //variable exponenteTemp que guarda el exponente en el momento de la posicion del ciclo
     char exponenteTemp[20] = ""; 
     //variable coeficientes que es un array de coeficientes de la ecuación
-    int coeficientes[20]; 
+    int coeficientes[20] = {}; 
     //variable exponentes que es un array de exponentes de la ecuación
-    int exponentes[20]; 
+    int exponentes[20] = {}; 
     //variable y que guarda los valores de y en un array de acuerdo a la ecuacion.
-    double y[20];
+    double y[20] = {};
     //variable coeficienteExponente que guerda en un array los arrays coeficientes y exponentes
-    int coeficienteExponente[2][20];
+    int coeficienteExponente[2][20] = {{}};
     //variable x que servirá como condicional para saber si en las iteraciones pasamos por una x
     int x = 0;
     //variable nCoeficientes que guarda la posicion dentro del array de coeficientes para guardar el proximo coeficiente
@@ -64,7 +64,7 @@ void Graph(){
     //varible saltos que guarda los intervalos que el usuario requiera
     int saltos = 0;
     //variable ecuationAuxiliar para convertir el caracter en el que estemos ubicados en string
-    char ecuationAuxiliar[2];
+    char ecuationAuxiliar[2] = "";
     //Ciclo para evaluar obtener los coeficientes y exponentes de la ecuación
     while(i != longitudEcuation){
         ecuationAuxiliar[0] = ecuation[i];
@@ -237,6 +237,7 @@ void Graph(){
     int nOperar = 0;
     //Inicio ciclo de operaciones
     while(counter <= finRango){
+        //variable newY que será el valor de Y de acuerdo al valor de X
         double newY = 0;
         for(int i = 0; i<nCoeficientes ; i++){
             if(exponentes[i] < 0 && counter == 0){
@@ -265,7 +266,7 @@ void Graph(){
 //Imprimimos dos saltos de linea
 printf("\n\n");
 //Varianle pantalla que tendrá el espacio para imprimir el gráfico
-char pantalla[25][100];
+char pantalla[25][100] = {{}};
 //funcion memset para inicializar todos los elementos del array pantalla en ' '
 memset(pantalla, ' ', sizeof(pantalla));
 //variable yMax que guardará el valor máximo de Y
