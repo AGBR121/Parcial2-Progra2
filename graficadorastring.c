@@ -1,3 +1,19 @@
+/*
+- Fecha de publicación: 1/10/2024
+- Hora de publicación: 8:05pm
+- Versión del código: 3
+- Autor: Ing(c) Burbano Rodriguez Angel Gabriel
+- Nombre del lenguaje utilizado: C
+- Versión del lenguaje utilizado: C11
+- Versión del compilador utilizado: GCC 6.3.0
+- Versión del S.O: Windows 10 Pro Versión 22H2
+- Presentado a: Doctor Ricardo Moreno Laverde
+- Universidad Tecnológica de Pereira
+- Programa de Ingeniería de Sistemas y Computación
+- Asignatura IS284 Programación II
+- Descripción del programa: Este programa es una graficadora usando solo string
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -287,7 +303,7 @@ if(ejesY >= 0 && ejesY <= 99){
     pantalla[i][ejesY] = 179;
     }
     //variable nY que guarda el valor a trabajar para imprimir los números del eje y
-    double nY = abs(yMin-yMax)/5;
+    double nY = abs(yMin-yMax)/5.0;
     for(int i = 0; i<6; i++){
         //variable placeY que guarda la posicion donde irá el elemento en el eje Y
         int placeY = (int) 24.0-round(pixelY*(yMin+nY*i)+ejeX);
