@@ -19,7 +19,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
-int main() {
+
+void Graph(){
     //variable i para iterar en el texto de la funcion
     int i = 0;
     //variable auxiliar para convertir el coeficiente temporal y el exponente temporal en vacío
@@ -396,6 +397,12 @@ for(int i = 0; i<25; i++){
     }
     printf("\n");
 }
+
+}
+
+int main() {
+    //Llamamos a la función Graph
+    Graph();
 
     return 0;
 }
