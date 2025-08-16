@@ -20,390 +20,376 @@
 #include <ctype.h>
 #include <math.h>
 
-void Graph(){
-    //variable i para iterar en el texto de la funcion
-    int i = 0;
-    //variable auxiliar para convertir el coeficiente temporal y el exponente temporal en vacío
-    char auxiliar[10] = "";
-    //variable ecuation que guarda el string de la ecuacion
-    char ecuation[100] = "";
-    //variable coeficienteTemp que guarda el coeficiente en el momento de la posicion del ciclo
-    char coeficienteTemp[20] = ""; 
-    //variable exponenteTemp que guarda el exponente en el momento de la posicion del ciclo
-    char exponenteTemp[20] = ""; 
-    //variable coeficientes que es un array de coeficientes de la ecuación
-    int coeficientes[20] = {}; 
-    //variable exponentes que es un array de exponentes de la ecuación
-    int exponentes[20] = {}; 
-    //variable y que guarda los valores de y en un array de acuerdo a la ecuacion.
-    double y[20] = {};
-    //variable coeficienteExponente que guerda en un array los arrays coeficientes y exponentes
-    int coeficienteExponente[2][20] = {{}};
-    //variable x que servirá como condicional para saber si en las iteraciones pasamos por una x
-    int x = 0;
-    //variable nCoeficientes que guarda la posicion dentro del array de coeficientes para guardar el proximo coeficiente
-    int nCoeficientes = 0;
-    //variable nExponentes que guarda la posicion dentro del array de exponentes para guardar el proximo exponente
-    int nExponentes = 0;
-    //variable signo que servirá como condicional para saber si en las iteraciones pasamos por un signo
-    int signo = 0;
-    //variable parentesis que servirá como condicional para saber si ne las iteraciones pasamos por un paréntesis
-    int parentesis = 0;
+int listOfCoefficientsAndExponents[2][20] = {{0}};
+char screen[25][100] = {{}};
+int coefficients[20] = {0};
+int exponents[20] = {0};
+char equation[100];
+int numberOfVariables = 0;
+int domainStart = 0;
+int endOfDomain = 0;
+int interval = 0;
+double yValues[100] = {0};
+int numberOfTerms = 0;
+
+//Inicializa toda la pantalla con espacios vacíos
+void InitScreen() {
+    memset(screen, ' ', sizeof(screen));
+}
+
+void readEquation() {
     printf("Ingrese la ecuacion a graficar: ");
-    scanf("%s", &ecuation);
-    //variable longitudEcuation para saber el número de carácteres de la ecuacion
-    int longitudEcuation = strlen(ecuation);
-    //variable longitudCoeficienteTemp para saber el número de carácteres del coeficienteTemp
-    int longitudCoeficienteTemp = strlen(coeficienteTemp);
-    //variable longitudExponenteTemp para saber el número de carácteres del exponenteTemp
-    int longitudExponenteTemp = strlen(exponenteTemp);
-    //variable inicioRango que guarda el inicio del dominio que el usuario requiera
-    int inicioRango = 0;
-    //variable finRango que guarda el final del dominio que el usuario requiera
-    int finRango = 0;
-    //varible saltos que guarda los intervalos que el usuario requiera
-    int saltos = 0;
-    //variable ecuationAuxiliar para convertir el caracter en el que estemos ubicados en string
-    char ecuationAuxiliar[2] = "";
-    //Ciclo para evaluar obtener los coeficientes y exponentes de la ecuación
-    while(i != longitudEcuation){
-        ecuationAuxiliar[0] = ecuation[i];
-        ecuationAuxiliar[1] ='\0';
-        if(toupper(ecuation[i]) == 'X'){
-            if(strcmp(coeficienteTemp, auxiliar) == 0 || strcmp(coeficienteTemp, "-") == 0) {
-                strcat(coeficienteTemp, "1");
-            }
-            coeficientes[nCoeficientes] = atoi(coeficienteTemp);
-            nCoeficientes++;
-            strcpy(coeficienteTemp, auxiliar);
-            x = 1;
-        }else if(ecuation[i] == '-' && !x && !signo){
-            strcat(coeficienteTemp, ecuationAuxiliar);
-            signo = 1;
-        }else if(ecuation[i] == '+' && !x && !signo){
-            signo = 1;
-        }else if(ecuation[i] == '('){
-            parentesis = 1;
-        }else if(ecuation[i] == ')'){
-            parentesis = 0;
-            signo = 0;
-            x = 0;
-            exponentes[nExponentes] = atoi(exponenteTemp);
-            strcpy(exponenteTemp, auxiliar);
-            nExponentes++;
-        }else if( x && signo && !parentesis && ecuation[i] == '-'){
-            strcat(coeficienteTemp, ecuationAuxiliar);
-            if(strcmp(exponenteTemp, auxiliar) == 0 || strcmp(exponenteTemp, "-") == 0) {
-                strcat(exponenteTemp, "1");
-            }
-            exponentes[nExponentes] = atoi(exponenteTemp);
-            nExponentes++;
-            strcpy(exponenteTemp, auxiliar);
-            x = 0;
-            signo = 1;
-        }else if(x && signo && !parentesis && ecuation[i] == '+'){
-            if(strcmp(exponenteTemp, auxiliar) == 0 || strcmp(exponenteTemp, "-") == 0) {
-                strcat(exponenteTemp, "1");
-            }
-            exponentes[nExponentes] = atoi(exponenteTemp);
-            nExponentes++;
-            strcpy(exponenteTemp, auxiliar);
-            x = 0;
-            signo = 1;
-        }else if(!x && signo && !parentesis && !(ecuation[i] == '+' || ecuation[i] == '-')){
-            strcat(coeficienteTemp, ecuationAuxiliar);
-            x = 0;
-            signo = 1;
-            strcpy(exponenteTemp, auxiliar);
-        }else if(x && signo && parentesis && !(ecuation[i] == '+' || ecuation[i] == '-')){
-            strcat(exponenteTemp, ecuationAuxiliar);
-        }else if(x && signo && !parentesis && !(ecuation[i] == '+' || ecuation[i] == '-')){
-            strcat(exponenteTemp, ecuationAuxiliar);
-        }else if(x && signo && parentesis && ecuation[i] == '-'){
-            strcat(exponenteTemp, ecuationAuxiliar);
-        }else if(!x && !signo && !parentesis){
-            strcat(coeficienteTemp, ecuationAuxiliar);
-            strcpy(exponenteTemp, auxiliar);
-            x = 0;
-            signo = 1;
-        }else if(x && !signo && !parentesis && ecuation[i] == '+'){
-            x = 0;
-            signo = 1;
-            if(strcmp(exponenteTemp, auxiliar) == 0 || strcmp(exponenteTemp, "-") == 0) {
-                strcat(exponenteTemp, "1");
-            }
-            exponentes[nExponentes] = atoi(exponenteTemp);
-            nExponentes++;
-            strcpy(exponenteTemp, auxiliar);
-        }else if(x && !signo && !parentesis && ecuation[i] == '-'){
-            x = 0;
-            signo = 1;
-            if(strcmp(exponenteTemp, auxiliar) == 0 || strcmp(exponenteTemp, "-") == 0) {
-                strcat(exponenteTemp, "1");
-            }
-            exponentes[nExponentes] = atoi(exponenteTemp);
-            nExponentes++;
-            strcpy(exponenteTemp, auxiliar);
-            strcat(coeficienteTemp, ecuationAuxiliar);
-        }else if(!x && signo && !parentesis && ecuation[i] == '+'){
-            if(strcmp(exponenteTemp, auxiliar) == 0 || strcmp(exponenteTemp, "-") == 0) {
-                strcat(exponenteTemp, "0");
-            }
-            exponentes[nExponentes] = atoi(exponenteTemp);
-            nExponentes++;
-            strcpy(exponenteTemp, auxiliar);
+    scanf("%s", equation);
+}
 
-            if(strcmp(coeficienteTemp, auxiliar) == 0 || strcmp(coeficienteTemp, "-") == 0) {
-                strcat(coeficienteTemp, "1");
+void readLimits(){
+    printf("\nDigite el inicio del dominio: ");
+    scanf("%i", &domainStart);
+    printf("\nDigite el final del dominio: ");
+    scanf("%i", &endOfDomain);
+    printf("\nDigite el intervalo: ");
+    scanf("%i", &interval);
+}
+
+void ParseEquation() {
+    unsigned int letterPosition = 0;
+    char temporalCoefficient[20] = "";
+    char temporalExponent[20] = "";
+    unsigned int coefficientPosition = 0;
+    unsigned int exponentPosition = 0;
+    unsigned int findX = 0;
+    unsigned int findSign = 0;
+    unsigned int findParenthesis = 0;
+    unsigned int equationSize = strlen(equation);
+    unsigned int temporalCoefficientSize = 0;
+    unsigned int temporalExponentSize = 0;
+    char actualChar[2] = "";
+
+    //Se revisa caracter por caracter y analiza si es coeficiente o exponente
+    while(letterPosition != equationSize) {
+        actualChar[0] = equation[letterPosition];
+        actualChar[1] = '\0';
+        if(toupper(equation[letterPosition]) == 'X') {
+            if(strcmp(temporalCoefficient, "") == 0 || strcmp(temporalCoefficient, "-") == 0){
+                strcat(temporalCoefficient, "1");
             }
-            coeficientes[nCoeficientes] = atoi(coeficienteTemp);
-            nCoeficientes++;
-            strcpy(coeficienteTemp, auxiliar);
-        }else if (x && !signo && !parentesis){
-            strcat(exponenteTemp, ecuationAuxiliar);
-        }else if(x && !signo && parentesis){
-            strcat(exponenteTemp, ecuationAuxiliar);
+            coefficients[temporalCoefficientSize] = atoi(temporalCoefficient);
+            temporalCoefficientSize++;
+            strcpy(temporalCoefficient, "");
+            findX = 1;
+        }else if(equation[letterPosition] == '-' && !findX && !findSign){
+            strcat(temporalCoefficient, actualChar);
+            findSign = 1;
+        }else if(equation[letterPosition] == '+' && !findX && !findSign){
+            findSign = 1;
+        }else if(equation[letterPosition] == '('){
+            findParenthesis = 1;
+        }else if(equation[letterPosition] == ')'){
+            findParenthesis = 0;
+            findSign = 0;
+            findX = 0;
+            exponents[temporalExponentSize] = atoi(temporalExponent);
+            temporalExponentSize++;
+        }else if(findX && findSign && !findParenthesis && ( equation[letterPosition] == '-' || equation[letterPosition] == '+')){
+            if(equation[letterPosition] == '-'){
+                strcat(temporalCoefficient, actualChar);
+            }
+            if(strcmp(temporalExponent, "")==0 || strcmp(temporalExponent, "-")==0){
+                strcat(temporalExponent, "1");
+            }
+            exponents[temporalExponentSize] = atoi(temporalExponent);
+            temporalExponentSize++;
+            strcpy(temporalExponent, "");
+            findX = 0;
+            findSign = 1;
+        }else if(!findX && findSign && !findParenthesis && !(equation[letterPosition] == '+' || equation[letterPosition] == '-')){
+            strcat(temporalCoefficient, actualChar);
+            findX = 0;
+            findSign = 1;
+            strcpy(temporalExponent, "");
+        }else if(findX && findSign && equation[letterPosition] != '+'){
+            strcat(temporalExponent, actualChar);
+        }else if(!findX && !findSign && !findParenthesis){
+            strcat(temporalCoefficient, actualChar);
+            findX = 0;
+            findSign = 1;
+        }else if(findX && !findSign && !findParenthesis && (equation[letterPosition] == '+' || equation[letterPosition] == '-')){
+            findX = 0;
+            findSign = 1;
+            if(strcmp(temporalExponent, "")==0 || strcmp(temporalExponent, "-")==0){
+                strcat(temporalExponent, "1");
+            }
+            exponents[temporalExponentSize] = atoi(temporalExponent);
+            temporalExponentSize++;
+            strcpy(temporalExponent, "");
+            if(equation[letterPosition] == '-'){
+                strcat(temporalCoefficient, "-");
+            }
+        }else if(!findX && findSign && !findParenthesis && equation[letterPosition] == '+'){
+            if(strcmp(temporalExponent, "") == 0 || strcmp(temporalExponent, "-") == 0 ){
+                strcat(temporalExponent, "0");
+            }
+            exponents[temporalExponentSize] = atoi(temporalExponent);
+            temporalExponentSize++;
+            strcpy(temporalExponent, "");
+
+            if(strcmp(temporalCoefficient, "") == 0 || strcmp(temporalCoefficient, "-") == 0 ){
+                strcat(temporalCoefficient, "1");
+            }
+            coefficients[temporalCoefficientSize] = atoi(temporalCoefficient);
+            temporalCoefficientSize++;
+            strcpy(temporalCoefficient, "");
+        }else if(findX && !findSign){
+            strcat(temporalExponent, actualChar);
         }else{
-            if(strcmp(exponenteTemp, auxiliar) == 0 || strcmp(exponenteTemp, "-") == 0) {
-                strcat(exponenteTemp, "0");
+            if(strcmp(temporalExponent, "") == 0 || strcmp(temporalExponent, "-") == 0 ){
+                strcat(temporalExponent, "0");
             }
-            exponentes[nExponentes] = atoi(exponenteTemp);
-            nExponentes++;
-            strcpy(exponenteTemp, auxiliar);
+            exponents[temporalExponentSize] = atoi(temporalExponent);
+            temporalExponentSize++;
+            strcpy(temporalExponent, "");
 
-            if(strcmp(coeficienteTemp, auxiliar) == 0 || strcmp(coeficienteTemp, "-") == 0) {
-                strcat(coeficienteTemp, "1");
+            if(strcmp(temporalCoefficient, "") == 0 || strcmp(temporalCoefficient, "-") == 0 ){
+                strcat(temporalCoefficient, "1");
             }
-            coeficientes[nCoeficientes] = atoi(coeficienteTemp);
-            nCoeficientes++;
-            strcpy(coeficienteTemp, auxiliar);
-            strcat(coeficienteTemp, ecuationAuxiliar);
+            coefficients[temporalCoefficientSize] = atoi(temporalCoefficient);
+            temporalCoefficientSize++;
+            strcpy(temporalCoefficient, "");
+            strcat(temporalCoefficient, actualChar);
+
         }
-        i++;
-    }// fin ciclo
+        letterPosition++;
+    }
 
-    //Revisamos si se quedó un coeficiente o un exponente en las variables temporales.
-    if(strcmp(coeficienteTemp, auxiliar) == 0 && strcmp(exponenteTemp, auxiliar) == 0 && !x){}
-    else{
-    if(strcmp(coeficienteTemp, auxiliar) == 0){
-        if(strcmp(exponenteTemp, auxiliar) == 0 || strcmp(exponenteTemp, "-") == 0) {
-                strcat(exponenteTemp, "1");
-            }
-            exponentes[nExponentes] = atoi(exponenteTemp);
-            nExponentes++;
+    //Revisamos si qurdó algún número coeficiente sin agregar
+    if(strcmp(temporalCoefficient, "") == 0){
+        if(strcmp(temporalExponent, "") == 0 || strcmp(temporalExponent, "-") == 0 ){
+            strcat(temporalExponent, "1");
+        }
+        exponents[temporalExponentSize] = atoi(temporalExponent);
+        temporalExponentSize++;
     }else{
-        if(strcmp(exponenteTemp, auxiliar) == 0 || strcmp(exponenteTemp, "-") == 0) {
-                strcat(exponenteTemp, "0");
+        if(strcmp(temporalExponent, "") == 0 || strcmp(temporalExponent, "-") == 0 ){
+            strcat(temporalExponent, "0");
+        }
+        exponents[temporalExponentSize] = atoi(temporalExponent);
+        temporalExponentSize++;
+
+        if(strcmp(temporalCoefficient, "") == 0 || strcmp(temporalCoefficient, "-") == 0 ){
+            strcat(temporalCoefficient, "0");
+        }
+        coefficients[temporalCoefficientSize] = atoi(temporalCoefficient);
+        temporalCoefficientSize++;
+
+    }
+    numberOfTerms = temporalCoefficientSize;
+}
+
+//Los valores de coeficientes y exponentes van en una sola matriz (obligatorio en el parcial)
+void SaveCoefficientsExponents(){
+    for(int arrayPosition = 0; arrayPosition < numberOfTerms; arrayPosition++ ){
+        listOfCoefficientsAndExponents[0][arrayPosition] = coefficients[arrayPosition];
+        listOfCoefficientsAndExponents[1][arrayPosition] = exponents[arrayPosition];
+    }
+}
+
+void EvaluateYValues() {
+    int xValue = domainStart;
+    int numberOfOperation = 0;
+    while (xValue <= endOfDomain) {
+        double yValue = 0;
+        for (int operationsPosition = 0; operationsPosition < numberOfTerms; operationsPosition++) {
+            // Evitar 0 a potencia negativa
+            if (exponents[operationsPosition] < 0 && xValue == 0) {
+                yValue = NAN;
+                break;
             }
-            exponentes[nExponentes] = atoi(exponenteTemp);
-            nExponentes++;
+            yValue += listOfCoefficientsAndExponents[0][operationsPosition] * pow(xValue, listOfCoefficientsAndExponents[1][operationsPosition]);
 
-        if(strcmp(coeficienteTemp, auxiliar) == 0 || strcmp(coeficienteTemp, "-") == 0) {
-                strcat(coeficienteTemp, "0");
-            }
-            coeficientes[nCoeficientes] = atoi(coeficienteTemp);
-            nCoeficientes++;
-    }
-    }
+        }
 
-    for(int i=0; i<nCoeficientes; i++){
-        coeficienteExponente[0][i]=coeficientes[i];
-        coeficienteExponente[1][i]=exponentes[i];
+        yValues[numberOfOperation] = yValue;
+        numberOfOperation++;
+        xValue += interval;
+        numberOfVariables++;
     }
-    //Imprimimos la tabla de coeficientes y exponentes
+}
 
+void PrintTableOfCoefficientsAndExponentss(){
     printf("\n  Coeficiente   Potencia\n");
     printf("+------------+------------+\n");
-
-    int k = 0;
-    //Ciclo para imprimir la tabla
-    for (int j = 0; j < nCoeficientes && k < nExponentes; j++) {
-        printf("|%-12d|%-12d|\n", coeficienteExponente[0][j], coeficienteExponente[1][j]);
-        k++;
+    for(int counter = 0; counter < numberOfTerms; counter++){
+        printf("|%-12d|%-12d|\n", listOfCoefficientsAndExponents[0][counter], listOfCoefficientsAndExponents[1][counter]);
         printf("+------------+------------+\n");
     }
-    printf("\nDigite el inicio del dominio: ");
-    scanf("%i", &inicioRango);
-    printf("\nDigite el final del dominio: ");
-    scanf("%i", &finRango);
-    printf("\nDigite el intervalo: ");
-    scanf("%i", &saltos);
+}
+
+void PrintTableOfValues(){
     printf("\n     X     |     Y     \n");
     printf("+----------+-----------+\n");
-
-    //variable counter para hayar el valor de Y en cada momento de X
-    int counter = inicioRango;
-    //vaeiable nOperar para conocer la cantidad de operaciones que se realizaron
-    int nOperar = 0;
-    //Inicio ciclo de operaciones
-    while(counter <= finRango){
-        //variable newY que será el valor de Y de acuerdo al valor de X
-        double newY = 0;
-        for(int i = 0; i<nCoeficientes ; i++){
-            if(exponentes[i] < 0 && counter == 0){
-                newY = NAN;
-                break;
-            }else{
-                newY = newY + (coeficienteExponente[0][i]*pow(counter, coeficienteExponente[1][i]));
-            }
-            
-        }
-        y[nOperar] = newY;
-        newY = 0;
-        nOperar++;
-        counter = counter + saltos;
-    }
-    //Ciclo para imprimir la tabla con los valores de X y Y
-    for(int i = 0; i < nOperar; i++){
-        if(isnan(y[i])){
-            printf("|%-10d|    IND    |\n", inicioRango+(saltos*i));
+    for(int counter = 0; counter < numberOfVariables; counter++){
+        if(isnan(yValues[counter])){
+            printf("|%-10d|    IND    |\n", domainStart+(interval*counter));
         }else{
-            printf("|%-10d|%-11.2f|\n", inicioRango+(saltos*i), y[i]);
+            printf("|%-10d|%-11.2f|\n", domainStart+(interval*counter), yValues[counter]);
         }
-        
         printf("+----------+-----------+\n");
     }
-//Imprimimos dos saltos de linea
-printf("\n\n");
-//Varianle pantalla que tendrá el espacio para imprimir el gráfico
-char pantalla[25][100] = {{}};
-//funcion memset para inicializar todos los elementos del array pantalla en ' '
-memset(pantalla, ' ', sizeof(pantalla));
-//variable yMax que guardará el valor máximo de Y
-double yMax = y[0];
-//Ciclo para hayar yMax
-for(int i = 0; i < nOperar; i++){
-    if(y[i] > yMax){
-        yMax = y[i];
-    }
-}
-//variable yMin que guarda el valor minimo de Y
-double yMin = yMax;
-//Ciclo para hayar el valor minimo de Y
-for(int i = 0; i < nOperar; i++){
-    if(y[i] < yMin){
-        yMin = y[i];
-    }
+    printf("\n\n");
 }
 
-//variable pixelX que guarda el valor hipotetico de un pixel escalado en X
-double pixelX = (abs(inicioRango-finRango) == 0) ? 100 :  100.0/abs(inicioRango-finRango);
-//variable pixelY que guarda el valor hipotetico de un pixel escalado en Y
-double pixelY = (fabs(yMin-yMax) == 0) ? 24 :  24.0/fabs(yMin-yMax);
-//variable ejeX que guarda el valor hipotetico del eje x
-double ejeX = -yMin * pixelY;
-//variable ejeY que guarda el valor hipotetico del eje y
-double ejeY = -inicioRango * pixelX;
-//variable ejesX que convierte en entero y redondeado la variable ejeX y trabajarlos en el array
-int ejesX = (int) round(ejeX);
-//variable ejesY que convierte en entero y redondeado la variable ejeY y trabajarlos en el array
-int ejesY = (int) round(ejeY);
-
-//Condicional y ciclo para guardar en el array pantalla la posición del eje y y los valores donde irá los números del eje y
-if(ejesY >= 0 && ejesY <= 99){
-    for(int i = 0; i <25; i++){
-    pantalla[i][ejesY] = 179;
+double FindHighestValueOfY(){
+    double yMax = yValues[0];
+    for(int counter = 0; counter < numberOfVariables; counter++){
+        if(yValues[counter] > yMax){
+            yMax = yValues[counter];
+        }
     }
-    //variable nY que guarda el valor a trabajar para imprimir los números del eje y
-    double nY = abs(yMin-yMax)/5.0;
-    for(int i = 0; i<6; i++){
-        //variable placeY que guarda la posicion donde irá el elemento en el eje Y
-        int placeY = (int) 24.0-round(pixelY*(yMin+nY*i)+ejeX);
-        //variable cadena que guarda el numero a trabajar en string
-        char cadena[12] = "";
-        sprintf(cadena, "%.2f", yMin+nY*i);
-        //variable longitud cadena que guarda la cantidad de caracteres de la variable cadena
-        int longitudCadena = strlen(cadena);
-        if(placeY != 24 - ejesX ){
-        if(ejesY < 5){
-            for(int j=0; j<longitudCadena; j++){
-                pantalla[placeY][ejesY+5+j] = cadena[j];
+    return yMax;
+}
+
+double FindLowestValueOfY(){
+    double yMin = FindHighestValueOfY();
+    for(int counter = 0; counter < numberOfVariables; counter++){
+        if(yValues[counter] < yMin){
+            yMin = yValues[counter];
+        }
+    }
+    return yMin;
+}
+
+
+// Función para dibujar los ejes y graficar los puntos en la pantalla
+void DrawAxesAndPoints(double yMin, double yMax) {
+    // Escala en X (para convertir valores reales en posiciones de pantalla)
+    double pixelX = (abs(domainStart - endOfDomain) == 0) ? 100 : 100.0 / abs(domainStart - endOfDomain);
+
+    // Escala en Y (para convertir valores reales en posiciones de pantalla)
+    double pixelY = (fabs(yMin - yMax) == 0) ? 24 : 24.0 / fabs(yMin - yMax);
+
+    // Posición del eje X en la pantalla (en coordenadas de la matriz)
+    double axisX = -yMin * pixelY;
+
+    // Posición del eje Y en la pantalla (en coordenadas de la matriz)
+    double axisY = -domainStart * pixelX;
+
+    // Conversión de los ejes a enteros
+    int axisXInt = (int) round(axisX);
+    int axisYInt = (int) round(axisY);
+
+    // --- DIBUJAR EJE Y ---
+    if (axisYInt >= 0 && axisYInt <= 99) {
+        for (int rowIndex = 0; rowIndex < 25; rowIndex++) {
+            screen[rowIndex][axisYInt] = '|';
+        }
+
+        // Calcular marcas de escala en el eje Y
+        double stepY = fabs(yMin - yMax) / 5.0;
+        for (int markIndex = 0; markIndex < 6; markIndex++) {
+            int placeY = (int) (24.0 - round(pixelY * (yMin + stepY * markIndex) + axisX));
+            char label[12] = "";
+            sprintf(label, "%.2f", yMin + stepY * markIndex);
+            int labelLength = strlen(label);
+
+            // Evitar que las etiquetas se dibujen sobre el eje X
+            if (placeY != 24 - axisXInt) {
+                if (axisYInt < 5) { // Cuando el eje Y está muy a la izquierda
+                    for (int labelIndex = 0; labelIndex < labelLength; labelIndex++) {
+                        screen[placeY][axisYInt + 5 + labelIndex] = label[labelIndex];
+                    }
+                } else if (axisYInt > 95) { // Cuando el eje Y está muy a la derecha
+                    for (int labelIndex = 0; labelIndex < labelLength; labelIndex++) {
+                        screen[placeY][axisYInt - 7 + labelIndex] = label[labelIndex];
+                    }
+                } else { // Cuando el eje Y está en el centro
+                    for (int labelIndex = 0; labelIndex < labelLength; labelIndex++) {
+                        screen[placeY][axisYInt - 3 + labelIndex] = label[labelIndex];
+                    }
+                }
             }
-        }else if(ejesY > 95){
-            for(int j=0; j<longitudCadena; j++){
-                pantalla[placeY][ejesY-7+j] = cadena[j];
+        }
+    }
+
+    // --- DIBUJAR EJE X ---
+    if (axisXInt >= 0 && axisXInt <= 23) {
+        for (int columnIndex = 0; columnIndex < 100; columnIndex++) {
+            screen[23 - axisXInt][columnIndex] = '-';
+        }
+
+        // Colocar etiquetas en el eje X
+        for (int pointIndex = 0; pointIndex < numberOfVariables; pointIndex++) {
+            char label[12] = "";
+            int placeX = (int) round(pixelX * (domainStart + interval * pointIndex) + axisY);
+
+            if (placeX < 0) {
+                placeX = 0;
+            } else if (placeX > 99) {
+                placeX = 99;
             }
-        }else{
-            for(int j=0; j<longitudCadena; j++){
-                pantalla[placeY][ejesY-3+j] = cadena[j];
+
+            sprintf(label, "%d", domainStart + (interval * pointIndex));
+            int labelLength = strlen(label);
+
+            for (int labelIndex = 0; labelIndex < labelLength && (placeX + labelIndex - 2) < 100; labelIndex++) {
+                if (pointIndex == numberOfVariables - 1) {
+                    screen[24 - axisXInt][placeX + labelIndex - 2] = label[labelIndex];
+                } else {
+                    screen[24 - axisXInt][placeX + labelIndex] = label[labelIndex];
+                }
             }
         }
+    }
+
+    // --- GRAFICAR PUNTOS DE LA FUNCIÓN ---
+    for (int pointIndex = 0; pointIndex < numberOfVariables; pointIndex++) {
+        if (!isnan(yValues[pointIndex])) {
+            int placeX = (int) round(pixelX * (domainStart + interval * pointIndex) + axisY);
+            int placeY = (int) (24.0 - round(pixelY * yValues[pointIndex] + axisX));
+
+            if (placeX < 0) {
+                placeX = 0;
+            } else if (placeX > 99) {
+                placeX = 99;
+            }
+            if (placeY < 0) {
+                placeY = 0;
+            } else if (placeY > 23) {
+                placeY = 23;
+            }
+            screen[placeY][placeX] = 'X';
         }
     }
 }
 
-//Condicional y ciclo para guardar en el array pantalla la posición del eje x y los valores donde irá los números del eje x
-if(ejesX >= 0 && ejesX <= 23){
-    for(int i = 0; i <100; i++){
-    pantalla[23-ejesX][i] = 196;
-   }
-for (int i = 0; i < nOperar; i++) {
-    //variable cadena que guardará el número a convertir en string
-    char cadena[12] = "";  
-    //variable placeX que guardará el valor dentro del array en X
-    int placeX = (int) round(pixelX * (inicioRango + saltos * i) + ejeY);
-    
-    if (placeX < 0) {
-        placeX = 0;
-    } else if (placeX > 99) {
-        placeX = 99;
-    }
-
-    sprintf(cadena, "%d", inicioRango + (saltos * i));
-    
-    //Variable longCadena que guarda la longitud de la variale cadena
-    int longCadena = strlen(cadena);
-
-    for (int j = 0; j < longCadena && (placeX + j-2) < 100; j++) {
-        if(i == nOperar-1){
-            pantalla[24 - ejesX][placeX + j-2] = cadena[j];
-        }else{
-            pantalla[24 - ejesX][placeX + j] = cadena[j];
+void DrawGraph() {
+    for(int yAxis = 0; yAxis<25; yAxis++){
+        for(int xAxis = 0; xAxis<100; xAxis++){
+            if(!screen[yAxis][xAxis]){
+                printf(" ");
+            }else{
+                printf("%c", screen[yAxis][xAxis]);
+            }
         }
+        printf("\n");
     }
 }
-    }
 
-
-//Ciclo que guarda en el array pantalla las posiciones donde irá la letra X en el gráfico
-for(int i = 0; i<nOperar; i++){
-    if(!isnan(y[i])){
-    //variable placeX que guarda el valor de la posicion en X del elemento
-    int placeX = (int) round(pixelX*(inicioRango+saltos*i)+ejeY);
-    //variable placeY que guarda el valor de la posicion en Y del elemento
-    int placeY = (int) 24.0-round(pixelY*y[i]+ejeX);
-    if(placeX < 0){
-        placeX = 0;
-    }else if(placeX > 99){
-        placeX = 99;
-    }
-    if(placeY < 0){
-        placeY = 0;
-    }else if(placeY > 23){
-        placeY = 23;
-    }
-    pantalla[placeY][placeX] = 'X';
-    }
-    
-}
-
-//Ciclo para imprimir el gráfico
-for(int i = 0; i<25; i++){
-    for(int j = 0; j<100; j++){
-        if(!pantalla[i][j]){
-            printf(" ");
-        }else{
-            printf("%c", pantalla[i][j]);
-        }
-    }
-    printf("\n");
-}
-
+void Graph(){
+    InitScreen();
+    readEquation();
+    ParseEquation();
+    SaveCoefficientsExponents();
+    PrintTableOfCoefficientsAndExponentss();
+    readLimits();
+    EvaluateYValues();
+    PrintTableOfValues();
+    double yMin = FindLowestValueOfY();
+    double yMax = FindHighestValueOfY();
+    DrawAxesAndPoints(yMin, yMax);
+    DrawGraph();
 }
 
 int main() {
-    //Llamamos a la función Graph
     Graph();
-
     return 0;
 }
